@@ -9,6 +9,7 @@ let package = Package(
         .target(name: "CSensors", linkerSettings: [.linkedFramework("IOKit")]),
         .target(name: "TempCheckCore", dependencies: ["CSensors"]),
         .executableTarget(name: "TempCheck", dependencies: ["TempCheckCore"]),
-        .testTarget(name: "TempCheckCoreTests", dependencies: ["TempCheckCore", "CSensors"])
+        .testTarget(name: "TempCheckCoreTests", dependencies: ["TempCheckCore", "CSensors"]),
+        .testTarget(name: "TempCheckAppTests", dependencies: ["TempCheck", "TempCheckCore"])
     ]
 )

@@ -93,6 +93,7 @@ public enum DemoReader {
             TemperatureSensor(id: "demo-gpu", name: "GPU · przykład", group: .gpu, celsius: 49 + wave * 5),
             TemperatureSensor(id: "demo-battery", name: "Bateria · przykład", group: .battery, celsius: 32 + wave)
         ], fans: [Fan(id: 0, rpm: 2100 + wave * 400, minimum: 1200, maximum: 6500),
-                  Fan(id: 1, rpm: 2000 + wave * 300, minimum: 1200, maximum: 6500)], reportedFanCount: 2, thermal: .nominal)
+                  Fan(id: 1, rpm: 2000 + wave * 300, minimum: 1200, maximum: 6500)], reportedFanCount: 2, thermal: .nominal,
+                        cpuUsagePercent: 34 + wave * 12, gpuUsagePercent: 21 + wave * 8)
     }
 }

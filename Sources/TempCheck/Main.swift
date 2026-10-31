@@ -7,7 +7,13 @@ import TempCheckCore
     @MainActor static func main() {
         let arguments = CommandLine.arguments
         if arguments.contains("--diagnose") {
-            let snapshot = SensorReader().sample()
+            let sensors = SensorReader().sample(), loadReader = SystemLoadReader()
+            _ = loadReader.sample()
+            Thread.sleep(forTimeInterval: 0.25)
+            let load = loadReader.sample()
+            let snapshot = Snapshot(date: sensors.date, temperatures: sensors.temperatures, fans: sensors.fans,
+                                    reportedFanCount: sensors.reportedFanCount, thermal: sensors.thermal, issue: sensors.issue,
+                                    cpuUsagePercent: load.cpuUsagePercent, gpuUsagePercent: load.gpuUsagePercent)
             let encoder = JSONEncoder(); encoder.outputFormatting = [.prettyPrinted, .sortedKeys]; encoder.dateEncodingStrategy = .iso8601
             if let data = try? encoder.encode(snapshot), let text = String(data: data, encoding: .utf8) { print(text) }
             return
@@ -38,6 +44,7 @@ import TempCheckCore
     var window: NSWindow?
     private var statusItem: NSStatusItem?
     private var changes: AnyCancellable?
+    private var terminating = false
     init(demo: Bool) { monitor = Monitor(demo: demo); super.init() }
     func applicationDidFinishLaunching(_ notification: Notification) {
         installMainMenu()
@@ -48,7 +55,9 @@ import TempCheckCore
         status.button?.font = .monospacedDigitSystemFont(ofSize: 12, weight: .medium)
         let menu = NSMenu(); menu.delegate = self; status.menu = menu
         changes = monitor.objectWillChange.debounce(for: .milliseconds(80), scheduler: RunLoop.main).sink { [weak self] _ in self?.updateStatus() }
-        updateStatus(); showWindow()
+        updateStatus()
+        if LoginItemService.wasLaunchedAtLogin { NSApp.setActivationPolicy(.accessory) }
+        else { showWindow() }
     }
     func prepareWindow() {
         guard window == nil else { return }
@@ -58,7 +67,7 @@ import TempCheckCore
         window.minSize = NSSize(width: 930, height: 720)
         window.titlebarAppearsTransparent = true
         window.isReleasedWhenClosed = false
-        window.contentView = NSHostingView(rootView: Dashboard(monitor: monitor))
+        window.contentView = NSHostingView(rootView: Dashboard(monitor: monitor, initialTab: CommandLine.arguments.contains("--settings-preview") ? 2 : 0))
         window.center(); self.window = window
     }
     private func installMainMenu() {
@@ -81,13 +90,16 @@ import TempCheckCore
     }
     private func updateStatus() {
         let prefix = monitor.demo ? "DEMO " : ""
-        statusItem?.button?.title = " \(prefix)\(monitor.unit.format(monitor.snapshot.hottest?.celsius))\(monitor.paused ? " Ⅱ" : "")"
-        statusItem?.button?.toolTip = "TempCheck · najcieplejszy dostępny czujnik\(monitor.paused ? " · pomiar wstrzymany" : "")"
+        statusItem?.button?.image = NSImage(systemSymbolName: monitor.menuMetric.symbol, accessibilityDescription: "TempCheck")
+        statusItem?.button?.title = " \(prefix)\(monitor.menuReading.text)\(monitor.paused ? " Ⅱ" : "")"
+        statusItem?.button?.toolTip = "TempCheck · \(monitor.menuReading.description)\(monitor.paused ? " · pomiar wstrzymany" : "")"
     }
     func menuWillOpen(_ menu: NSMenu) {
         menu.removeAllItems()
         add(menu, monitor.demo ? "TempCheck — DEMO" : "TempCheck", nil)
         add(menu, "Stan cieplny: \(monitor.snapshot.thermal.rawValue)", nil)
+        if let cpu = monitor.snapshot.cpuUsagePercent { add(menu, "Obciążenie CPU: \(Int(cpu.rounded()))%", nil) }
+        if let gpu = monitor.snapshot.gpuUsagePercent { add(menu, "Obciążenie GPU: \(Int(gpu.rounded()))%", nil) }
         if let hottest = monitor.snapshot.hottest { add(menu, "\(hottest.name): \(monitor.unit.format(hottest.celsius))", nil) }
         if monitor.snapshot.reportedFanCount == 0 { add(menu, "SMC: brak wentylatorów", nil) }
         else if monitor.snapshot.fans.isEmpty { add(menu, "Wentylatory: brak danych", nil) }
@@ -100,12 +112,20 @@ import TempCheckCore
         add(menu, "Eksport CSV…", #selector(export))
         menu.addItem(.separator()); add(menu, "Zamknij TempCheck", #selector(quit), key: "q")
     }
-    @objc func showWindow() { prepareWindow(); window?.makeKeyAndOrderFront(nil); NSApp.activate(ignoringOtherApps: true) }
+    @objc func showWindow() { NSApp.setActivationPolicy(.regular); prepareWindow(); window?.makeKeyAndOrderFront(nil); NSApp.activate(ignoringOtherApps: true) }
     @objc private func refresh() { monitor.refresh() }
     @objc private func togglePause() { monitor.paused.toggle() }
     @objc private func export() { showWindow(); monitor.exportCSV() }
     @objc private func quit() { NSApp.terminate(nil) }
-    @objc private func about() { NSApp.orderFrontStandardAboutPanel(options: [.applicationName: "TempCheck", .applicationVersion: "0.1.0", .credits: NSAttributedString(string: "Temperatura i chłodzenie Twojego Maca.\nDane przetwarzane lokalnie.")]) }
+    @objc private func about() { NSApp.orderFrontStandardAboutPanel(options: [.applicationName: "TempCheck", .applicationVersion: "0.2.0", .credits: NSAttributedString(string: "Temperatura i chłodzenie Twojego Maca.\nDane przetwarzane lokalnie.")]) }
+    func applicationDidBecomeActive(_ notification: Notification) { monitor.loginItem.refresh(); monitor.notifications.refreshAuthorization() }
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        if !terminating {
+            terminating = true
+            monitor.saveHistory { NSApp.reply(toApplicationShouldTerminate: true) }
+        }
+        return .terminateLater
+    }
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool { showWindow(); return true }
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
 }
