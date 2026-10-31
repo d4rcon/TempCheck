@@ -7,15 +7,13 @@
 - [x] 4. Historia i ustawienia.
 - [x] 5. Kompilacja obu architektur, render wyglądu i pakowanie.
 - [x] Utworzenie prywatnego repo https://github.com/d4rcon/TempCheck.
-- [ ] Wysłanie kodu do repo — połączenie GitHub zwraca 404, brak dostępu do nowego repo.
+- [x] Wysłanie kodu do repo — main zawiera komplet źródeł, testów, plan i instrukcję budowania.
 - [ ] Ręczny test klikania w GUI — narzędzie komputerowe nie ma uprawnień systemowych.
 
 ## Następne zadanie
-1. Sprawdzić dostęp GitHub do d4rcon/TempCheck, gdy użytkownik dokończy konfigurację.
-2. Wysłać śledzone pliki projektu do main. Nie wysyłać surowych pomiarów ani katalogu work.
-3. Ręcznie sprawdzić GUI: pasek menu, zmiana zakładek, pauza, jednostki, eksport,
+1. Ręcznie sprawdzić GUI: pasek menu, zmiana zakładek, pauza, jednostki, eksport,
    zamknięcie okna bez kończenia procesu, zakończenie przez menu i wznowienie po uśpieniu.
-4. Następne rozszerzenie po weryfikacji: start przy logowaniu albo powiadomienia
+2. Następne rozszerzenie po weryfikacji: start przy logowaniu albo powiadomienia
    o utrzymującym się wysokim stanie cieplnym; realizować jako osobne małe zadanie.
 
 ## Decyzje
@@ -41,3 +39,10 @@ brak sterowania wentylatorami. Automatyczne wznawianie po limitach nie jest skon
 `TempCheck.app` i `TempCheck-macOS.zip` znajdują się obok katalogu projektu.
 Kod źródłowy i dokumentacja są kompletne lokalnie. Do repo wysyłać śledzone pliki,
 nie gotowe binarki ani wyniki lokalnej diagnostyki.
+
+## Publikacja
+Źródła opublikowano przez połączony GitHub. Drzewo początkowej opublikowanej wersji
+`6183f20e454b937eaa51ec329239b9e9b3227192` odpowiadało dokładnie lokalnym plikom.
+Lokalna historia zapisuje osobne etapy; zdalna zawiera ich wspólny snapshot.
+Przed przyszłym użyciem `git push` należy pobrać i uzgodnić historie; nie wymuszać push.
+Przy publikacji przez API pobrać bieżący zdalny SHA i aktualizować z kontrolą oczekiwanego SHA.
