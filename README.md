@@ -79,15 +79,11 @@ oznacza brak informacji. `0 RPM` oznacza poprawnie odczytany zatrzymany wentylat
 Zakres odczytów temperatur w tej wersji jest ograniczony do (0, 150] °C;
 nieaktywne kanały i wartości poza zakresem są traktowane jako niedostępne.
 
-## Dalsza praca w małych krokach
+## Rozwój projektu
 
 - [Plan funkcji i etapów](docs/PLAN.md)
 - [Postęp, testy i następne zadanie](docs/PROGRESS.md)
-- [Zasady krótkich sesji AI](AGENTS.md)
-
-Po przerwie wystarczy polecenie: „TempCheck: przeczytaj PROGRESS.md i wykonaj
-następne zadanie”. Automatyczne wznowienie po odnowieniu limitów AI nie zostało
-skonfigurowane. Stan pracy jest zapisany w plikach i commitach.
+- [Zasady rozwoju](docs/DEVELOPMENT.md)
 
 ## Źródła techniczne
 

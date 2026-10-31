@@ -8,7 +8,7 @@
 - [x] 5. Kompilacja obu architektur, render wyglądu i pakowanie.
 - [x] Utworzenie prywatnego repo https://github.com/d4rcon/TempCheck.
 - [x] Wysłanie kodu do repo — main zawiera komplet źródeł, testów, plan i instrukcję budowania.
-- [ ] Ręczny test klikania w GUI — narzędzie komputerowe nie ma uprawnień systemowych.
+- [ ] Ręczne testy obsługi GUI.
 
 ## Następne zadanie
 1. Ręcznie sprawdzić GUI: pasek menu, zmiana zakładek, pauza, jednostki, eksport,
@@ -18,7 +18,7 @@
 
 ## Decyzje
 Minimum macOS 12; SwiftUI + AppKit; brak zależności sieciowych; dane lokalne;
-brak sterowania wentylatorami. Automatyczne wznawianie po limitach nie jest skonfigurowane.
+brak sterowania wentylatorami.
 
 ## Weryfikacja
 - 2026-10-31: macOS 27.0.1, arm64, Swift 6.4.
@@ -31,7 +31,6 @@ brak sterowania wentylatorami. Automatyczne wznawianie po limitach nie jest skon
 - `vtool` potwierdza minimum macOS 12.0 i SDK 27.0 w obu częściach binarki.
 - `codesign --verify --deep --strict` przechodzi; podpis ad hoc, brak notaryzacji.
 - Render SwiftUI sprawdzony wizualnie w jasnym i ciemnym motywie, z jawnymi danymi demo.
-- Automatyczny test uruchomionego GUI zablokowany brakiem uprawnień Computer Use.
 - Brak testów sprzętowych na Intel i starszych macOS; brak testów długiego działania,
   obciążenia, faktycznie obracających się wentylatorów i uśpienia/wznowienia.
 
@@ -40,9 +39,7 @@ brak sterowania wentylatorami. Automatyczne wznawianie po limitach nie jest skon
 Kod źródłowy i dokumentacja są kompletne lokalnie. Do repo wysyłać śledzone pliki,
 nie gotowe binarki ani wyniki lokalnej diagnostyki.
 
-## Publikacja
-Źródła opublikowano przez połączony GitHub. Drzewo początkowej opublikowanej wersji
-`6183f20e454b937eaa51ec329239b9e9b3227192` odpowiadało dokładnie lokalnym plikom.
-Lokalna historia zapisuje osobne etapy; zdalna zawiera ich wspólny snapshot.
+## Repozytorium
+Lokalna historia zapisuje osobne etapy; zdalna zawiera ich wspólną wersję.
 Przed przyszłym użyciem `git push` należy pobrać i uzgodnić historie; nie wymuszać push.
 Przy publikacji przez API pobrać bieżący zdalny SHA i aktualizować z kontrolą oczekiwanego SHA.

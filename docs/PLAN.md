@@ -8,16 +8,14 @@
 - Interwał 1/2/5/10 s, jednostki °C/°F, pauza i odświeżenie.
 - Stan cieplny macOS, obsługa braku dostępu do sprzętu, eksport CSV.
 
-## Małe etapy
-1. Repo, założenia i dokumentacja. Wynik: README, plan, zasady krótkich sesji.
+## Etapy rozwoju
+1. Repo, założenia i dokumentacja. Wynik: README, plan i zasady rozwoju.
 2. Odczyty. Wynik: tylko odczyt SMC, walidacja danych, diagnostyka CLI i testy dekodowania.
 3. Interfejs. Wynik: pulpit, lista czujników, wentylatory i pasek menu.
 4. Historia i ustawienia. Wynik: wykresy, pauza, jednostki, eksport.
 5. Weryfikacja i pakowanie. Wynik: testy, build arm64/x86_64, aplikacja .app i ZIP.
 
-Każdy etap kończy się aktualizacją `PROGRESS.md` i commitem. Kolejne zadania można
-zlecać pojedynczo, np. „TempCheck: wykonaj następne zadanie z PROGRESS.md”.
-Nie wymaga to automatyzacji ani ponownego przesyłania całej historii rozmowy.
+Każdy etap kończy się aktualizacją `PROGRESS.md` i commitem.
 
 ## Dodatki po pierwszej wersji
 - Powiadomienia o utrzymującym się wysokim stanie cieplnym, z opóźnieniem i wyciszeniem.
